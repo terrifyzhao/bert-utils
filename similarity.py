@@ -79,7 +79,7 @@ class SimProcessor(DataProcessor):
         return train_data
 
     def get_dev_examples(self, data_dir):
-        file_path = os.path.join(data_dir, 'test.csv')
+        file_path = os.path.join(data_dir, 'dev.csv')
         dev_df = pd.read_csv(file_path, encoding='utf-8')
         dev_data = []
         for index, dev in enumerate(dev_df.values):
