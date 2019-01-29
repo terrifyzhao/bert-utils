@@ -51,3 +51,5 @@ bs = BertSim()
 bs.set_mode(tf.estimator.ModeKeys.PREDICT)
 bs.test
 ```
+
+5、DEMO中自带了蚂蚁金服的测试数据供大家使用
