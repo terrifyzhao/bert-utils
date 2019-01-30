@@ -1,19 +1,10 @@
-import os
 import tempfile
 import json
 import logging
 from termcolor import colored
 import modeling
 import args
-import contextlib
-
-
-def import_tf(device_id=-1, verbose=False):
-    os.environ['CUDA_VISIBLE_DEVICES'] = '-1' if device_id < 0 else str(device_id)
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '0' if verbose else '3'
-    import tensorflow as tf
-    tf.logging.set_verbosity(tf.logging.DEBUG if verbose else tf.logging.ERROR)
-    return tf
+import tensorflow as tf
 
 
 def set_logger(context, verbose=False):
@@ -35,7 +26,6 @@ def optimize_graph(logger=None, verbose=False):
         logger = set_logger(colored('BERT_VEC', 'yellow'), verbose)
     try:
         # we don't need GPU for optimizing the graph
-        tf = import_tf(device_id=0, verbose=verbose)
         from tensorflow.python.tools.optimize_for_inference_lib import optimize_for_inference
 
         # allow_soft_placement:自动选择运行设备
@@ -75,9 +65,7 @@ def optimize_graph(logger=None, verbose=False):
 
             tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
 
-            minus_mask = lambda x, m: x - tf.expand_dims(1.0 - m, axis=-1) * 1e30
             mul_mask = lambda x, m: x * tf.expand_dims(m, axis=-1)
-            masked_reduce_max = lambda x, m: tf.reduce_max(minus_mask(x, m), axis=1)
             masked_reduce_mean = lambda x, m: tf.reduce_sum(mul_mask(x, m), axis=1) / (
                     tf.reduce_sum(m, axis=1, keepdims=True) + 1e-10)
 
@@ -113,7 +101,7 @@ def optimize_graph(logger=None, verbose=False):
                 [n.name[:-2] for n in output_tensors],
                 [dtype.as_datatype_enum for dtype in dtypes],
                 False)
-        tmp_file = tempfile.NamedTemporaryFile('w', delete=False).name
+        tmp_file = tempfile.NamedTemporaryFile('w', delete=False, dir=args.output_dir).name
         logger.info('write graph to a tmp file: %s' % tmp_file)
         with tf.gfile.GFile(tmp_file, 'wb') as f:
             f.write(tmp_g.SerializeToString())

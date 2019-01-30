@@ -181,7 +181,7 @@ class BertSim:
     def model_fn_builder(self, bert_config, num_labels, init_checkpoint, learning_rate,
                          num_train_steps, num_warmup_steps,
                          use_one_hot_embeddings):
-        """Returns `model_fn` closure for TPUEstimator."""
+        """Returns `model_fn` closurimport_tfe for TPUEstimator."""
 
         def model_fn(features, labels, mode, params):  # pylint: disable=unused-argument
             from tensorflow.python.estimator.model_fn import EstimatorSpec

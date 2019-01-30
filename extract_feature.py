@@ -1,12 +1,10 @@
-from graph import import_tf
 import modeling
 import tokenization
 from graph import optimize_graph
 import args
 from queue import Queue
 from threading import Thread
-
-tf = import_tf(0, True)
+import tensorflow as tf
 
 
 class InputExample(object):

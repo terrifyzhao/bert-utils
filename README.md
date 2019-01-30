@@ -12,7 +12,7 @@
 
 生成句向量不需要做fine tune，使用预先训练好的模型即可，可参考`extract_feature.py`的`main`方法，注意参数必须是一个list。
 
-第一次生成句向量时需要加载graph，速度比较慢，后续速度会很快
+首次生成句向量时需要加载graph，并在output_dir路径下生成一个新的graph文件，因此速度比较慢，再次调用速度会很快
 ```
 from bert.extrac_feature import BertVector
 bv = BertVector()
