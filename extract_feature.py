@@ -328,12 +328,8 @@ class BertVector:
 
 
 if __name__ == "__main__":
-    import time
-
     bert = BertVector()
     while True:
         question = input('question: ')
-        start = time.time()
         vectors = bert.encode([question])
         print(str(vectors))
-        print(f'predict time:----------{time.time() - start}')

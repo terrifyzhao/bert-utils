@@ -54,8 +54,7 @@ def optimize_graph(logger=None, verbose=False):
         input_mask = tf.placeholder(tf.int32, (None, args.max_seq_len), 'input_mask')
         input_type_ids = tf.placeholder(tf.int32, (None, args.max_seq_len), 'input_type_ids')
 
-        # xla加速
-        jit_scope = tf.contrib.compiler.jit.experimental_jit_scope if args.xla else contextlib.suppress
+        jit_scope = tf.contrib.compiler.jit.experimental_jit_scope
 
         with jit_scope():
             input_tensors = [input_ids, input_mask, input_type_ids]
