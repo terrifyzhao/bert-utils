@@ -2,3 +2,5 @@
 tmp/
 __pycache__/
 .idea/
+data/data_merger.py
+data/data.py
