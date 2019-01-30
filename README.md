@@ -1,6 +1,6 @@
 # bert-utils
 
-本文基于Google开源的[BERT]()代码进行了进一步的简化，方便生成句向量与做文本分类
+本文基于Google开源的[BERT](https://github.com/google-research/bert)代码进行了进一步的简化，方便生成句向量与做文本分类
 
 1、下载BERT中文模型 
 

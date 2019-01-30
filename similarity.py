@@ -664,13 +664,13 @@ class BertSim:
 
 if __name__ == '__main__':
     sim = BertSim()
-    # sim.set_mode(tf.estimator.ModeKeys.TRAIN)
-    # sim.train()
-    # sim.set_mode(tf.estimator.ModeKeys.EVAL)
-    # sim.eval()
-    sim.set_mode(tf.estimator.ModeKeys.PREDICT)
-    while True:
-        sentence1 = input('sentence1: ')
-        sentence2 = input('sentence2: ')
-        predict = sim.predict(sentence1, sentence2)
-        print(f'similarity：{predict[0][1]}')
+    sim.set_mode(tf.estimator.ModeKeys.TRAIN)
+    sim.train()
+    sim.set_mode(tf.estimator.ModeKeys.EVAL)
+    sim.eval()
+    # sim.set_mode(tf.estimator.ModeKeys.PREDICT)
+    # while True:
+    #     sentence1 = input('sentence1: ')
+    #     sentence2 = input('sentence2: ')
+    #     predict = sim.predict(sentence1, sentence2)
+    #     print(f'similarity：{predict[0][1]}')
