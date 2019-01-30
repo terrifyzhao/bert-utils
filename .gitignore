@@ -1,11 +1,4 @@
-
-.idea/bert-utils.iml
-.idea/misc.xml
-.idea/modules.xml
-.idea/vcs.xml
-.idea/workspace.xml
-chinese_L-12_H-768_A-12/bert_config.json
-chinese_L-12_H-768_A-12/bert_model.ckpt.data-00000-of-00001
-chinese_L-12_H-768_A-12/bert_model.ckpt.index
-chinese_L-12_H-768_A-12/bert_model.ckpt.meta
-chinese_L-12_H-768_A-12/vocab.txt
+chinese_L-12_H-768_A-12/:
+/tmp:
+__pycache__/:
+.idea/:
