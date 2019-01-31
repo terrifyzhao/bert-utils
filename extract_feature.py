@@ -7,7 +7,7 @@ from threading import Thread
 import tensorflow as tf
 import os
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 
 class InputExample(object):
@@ -46,6 +46,7 @@ class BertVector:
         self.input_queue = Queue(maxsize=1)
         self.output_queue = Queue(maxsize=1)
         self.predict_thread = Thread(target=self.predict_from_queue, daemon=True)
+        self.predict_thread.start()
         self.sentence_len = 0
 
     def get_estimator(self):
@@ -84,9 +85,8 @@ class BertVector:
 
     def encode(self, sentence):
         self.sentence_len = len(sentence)
-        self.predict_thread.start()
         self.input_queue.put(sentence)
-        prediction = self.output_queue.get()
+        prediction = self.output_queue.get()['encodes'][0]
         return prediction
 
     def queue_predict_input_fn(self):
@@ -101,7 +101,7 @@ class BertVector:
                 'unique_ids': (self.sentence_len,),
                 'input_ids': (None, self.max_seq_length),
                 'input_mask': (None, self.max_seq_length),
-                'input_type_ids': (None, self.max_seq_length)}))
+                'input_type_ids': (None, self.max_seq_length)}).prefetch(10))
 
     def generate_from_queue(self):
         while True:
