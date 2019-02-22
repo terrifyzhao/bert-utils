@@ -5,6 +5,9 @@ from termcolor import colored
 import modeling
 import args
 import tensorflow as tf
+import os
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 
 def set_logger(context, verbose=False):
@@ -27,11 +30,9 @@ def optimize_graph(logger=None, verbose=False):
     try:
         # we don't need GPU for optimizing the graph
         from tensorflow.python.tools.optimize_for_inference_lib import optimize_for_inference
+        tf.gfile.MakeDirs(args.output_dir)
 
-        # allow_soft_placement:自动选择运行设备
-        config = tf.ConfigProto(allow_soft_placement=True)
         config_fp = args.config_name
-        init_checkpoint = args.ckpt_name
         logger.info('model config: %s' % config_fp)
 
         # 加载bert配置文件
@@ -60,14 +61,11 @@ def optimize_graph(logger=None, verbose=False):
             # 获取所有要训练的变量
             tvars = tf.trainable_variables()
 
+            init_checkpoint = args.ckpt_name
             (assignment_map, initialized_variable_names) = modeling.get_assignment_map_from_checkpoint(tvars,
                                                                                                        init_checkpoint)
 
             tf.train.init_from_checkpoint(init_checkpoint, assignment_map)
-
-            mul_mask = lambda x, m: x * tf.expand_dims(m, axis=-1)
-            masked_reduce_mean = lambda x, m: tf.reduce_sum(mul_mask(x, m), axis=1) / (
-                    tf.reduce_sum(m, axis=1, keepdims=True) + 1e-10)
 
             # 共享卷积核
             with tf.variable_scope("pooling"):
@@ -79,8 +77,11 @@ def optimize_graph(logger=None, verbose=False):
                     all_layers = [model.all_encoder_layers[l] for l in args.layer_indexes]
                     encoder_layer = tf.concat(all_layers, -1)
 
-                input_mask = tf.cast(input_mask, tf.float32)
+            mul_mask = lambda x, m: x * tf.expand_dims(m, axis=-1)
+            masked_reduce_mean = lambda x, m: tf.reduce_sum(mul_mask(x, m), axis=1) / (
+                    tf.reduce_sum(m, axis=1, keepdims=True) + 1e-10)
 
+            input_mask = tf.cast(input_mask, tf.float32)
             # 以下代码是句向量的生成方法，可以理解为做了一个卷积的操作，但是没有把结果相加, 卷积核是input_mask
             pooled = masked_reduce_mean(encoder_layer, input_mask)
             pooled = tf.identity(pooled, 'final_encodes')
@@ -88,6 +89,8 @@ def optimize_graph(logger=None, verbose=False):
             output_tensors = [pooled]
             tmp_g = tf.get_default_graph().as_graph_def()
 
+        # allow_soft_placement:自动选择运行设备
+        config = tf.ConfigProto(allow_soft_placement=True)
         with tf.Session(config=config) as sess:
             logger.info('load parameters from checkpoint...')
             sess.run(tf.global_variables_initializer())
