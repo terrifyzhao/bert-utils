@@ -54,4 +54,4 @@ bs.set_mode(tf.estimator.ModeKeys.PREDICT)
 bs.test
 ```
 
-5、DEMO中自带了蚂蚁金服的测试数据供大家使用
+5、DEMO中自带了蚂蚁金服的测试数据供大家使用，但该份数据区分度不大，建议使用QA_corpus数据集，这里给出[地址](http://icrc.hitsz.edu.cn/info/1037/1162.htm)
