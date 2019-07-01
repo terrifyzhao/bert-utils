@@ -7,6 +7,8 @@
 再次执行时直接读取该文件，如果`args.py`文件内容有修改，需要删除`tmp/result/graph`文件
 + 修复同时启动两个进程生成句向量时代码报错的bug
 
+---
+
 1、下载BERT中文模型 
 
 下载地址: https://storage.googleapis.com/bert_models/2018_11_03/chinese_L-12_H-768_A-12.zip
