@@ -39,7 +39,11 @@ class BertVector:
         self.max_seq_length = args.max_seq_len
         self.layer_indexes = args.layer_indexes
         self.gpu_memory_fraction = 1
-        self.graph_path = optimize_graph()
+        if os.path.exists(args.graph_file):
+            self.graph_path = args.graph_file
+        else:
+            self.graph_path = optimize_graph()
+
         self.tokenizer = tokenization.FullTokenizer(vocab_file=args.vocab_file, do_lower_case=True)
         self.batch_size = batch_size
         self.estimator = self.get_estimator()
@@ -75,7 +79,7 @@ class BertVector:
         config.graph_options.optimizer_options.global_jit_level = tf.OptimizerOptions.ON_1
 
         return Estimator(model_fn=model_fn, config=RunConfig(session_config=config),
-                         params={'batch_size': self.batch_size})
+                         params={'batch_size': self.batch_size}, model_dir='../tmp')
 
     def predict_from_queue(self):
         prediction = self.estimator.predict(input_fn=self.queue_predict_input_fn, yield_single_examples=False)
@@ -330,7 +334,8 @@ class BertVector:
 
 if __name__ == "__main__":
     bert = BertVector()
-    # while True:
-    #     question = input('question: ')
-    vectors = bert.encode(['你好', '哈哈'])
-    print(str(vectors))
+
+    while True:
+        question = input('question: ')
+        v = bert.encode([question])
+        print(str(v))

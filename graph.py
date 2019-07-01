@@ -1,4 +1,3 @@
-import tempfile
 import json
 import logging
 from termcolor import colored
@@ -6,8 +5,6 @@ import modeling
 import args
 import tensorflow as tf
 import os
-
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
 
 def set_logger(context, verbose=False):
@@ -104,7 +101,8 @@ def optimize_graph(logger=None, verbose=False):
                 [n.name[:-2] for n in output_tensors],
                 [dtype.as_datatype_enum for dtype in dtypes],
                 False)
-        tmp_file = tempfile.NamedTemporaryFile('w', delete=False, dir=args.output_dir).name
+        # tmp_file = tempfile.NamedTemporaryFile('w', delete=False, dir=args.output_dir).name
+        tmp_file = args.graph_file
         logger.info('write graph to a tmp file: %s' % tmp_file)
         with tf.gfile.GFile(tmp_file, 'wb') as f:
             f.write(tmp_g.SerializeToString())

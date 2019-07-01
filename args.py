@@ -23,4 +23,7 @@ gpu_memory_fraction = 0.8
 layer_indexes = [-2]
 
 # 序列的最大程度，单文本建议把该值调小
-max_seq_len = 32
+max_seq_len = 5
+
+# graph名字
+graph_file = 'tmp/result/graph'
